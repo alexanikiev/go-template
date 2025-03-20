@@ -1,0 +1,45 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allows manual triggering
+
+env:
+  ACR_LOGIN_SERVER: ${{ secrets.ACR_NAME }}.azurecr.io
+  IMAGE_NAME: solver-app
+  TAG: latest
+
+jobs:
+  deploy:
+    name: Deploy to Azure Function
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Pull latest ACR image
+        run: |
+          az acr login --name ${{ secrets.ACR_NAME }}
+          docker pull $ACR_LOGIN_SERVER/$IMAGE_NAME:$TAG
+
+      - name: Deploy to Azure Function
+        run: |
+          az functionapp config container set \
+            --name ${{ secrets.FUNCTION_APP_NAME }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --docker-custom-image-name $ACR_LOGIN_SERVER/$IMAGE_NAME:$TAG \
+            --docker-registry-server-url https://$ACR_LOGIN_SERVER
+
+      - name: Restart Azure Function App
+        run: |
+          az functionapp restart \
+            --name ${{ secrets.FUNCTION_APP_NAME }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }}

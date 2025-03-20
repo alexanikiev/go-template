@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solver-app
+  labels:
+    app: solver-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solver-app
+  template:
+    metadata:
+      labels:
+        app: solver-app
+    spec:
+      containers:
+        - name: solver-app
+          image: myacrname.azurecr.io/solver-app:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

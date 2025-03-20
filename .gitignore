@@ -1,0 +1,45 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.out
+*.o
+
+# Go build & cache directories
+/bin/
+/build/
+/dist/
+/vendor/
+/coverage.out
+/tmp/
+/testdata/
+*.test
+
+# Go module files
+go.work
+go.work.sum
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs & Debugging files
+*.log
+*.bak
+*.tmp
+*.DS_Store
+debug/
+
+# Dependency directories (when using vendoring)
+vendor/
+
+# cgo-related files
+_cgo_*
+
+# Environment files (if any)
+.env
+.env.local

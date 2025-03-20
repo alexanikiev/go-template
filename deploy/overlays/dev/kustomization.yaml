@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Inherit from base
+resources:
+  - ../../base
+
+# Apply patches to modify base manifests for the dev environment
+patchesStrategicMerge:
+  - deployment-patch.yaml
+  - service-patch.yaml
+
+# Override the container image for development
+images:
+  - name: myacrname.azurecr.io/solver-app
+    newTag: dev-latest  # Change the image tag for the dev environment
